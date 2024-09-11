@@ -1,0 +1,39 @@
+
+const localStream = ref(null); // Для хранения локального потока
+const pc = ref(null); // Для хранения RTCPeerConnection
+
+const clickMic = async () => {
+  isMic.value = !isMic.value;
+
+  if (isMic.value) {
+    try {
+      // Получаем доступ к микрофону
+      localStream.value = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+      // Если RTCPeerConnection уже создан, добавляем трек
+      if (pc.value) {
+        localStream.value.getTracks().forEach((track) => pc.value.addTrack(track, localStream.value));
+      } else {
+        // Если RTCPeerConnection еще не создан, создаем его и добавляем трек
+        pc.value = new RTCPeerConnection({
+          iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
+        });
+        localStream.value.getTracks().forEach((track) => pc.value.addTrack(track, localStream.value));
+        // Воспроизводим локальный поток
+        document.getElementById('audio').srcObject = localStream.value;
+      }
+    } catch (error) {
+      console.error('Ошибка получения доступа к микрофону:', error);
+    }
+  } else {
+    // Удаляем трек микрофона
+    if (pc.value) {
+      localStream.value.getTracks().forEach((track) => pc.value.removeTrack(track));
+    }
+
+    // Останавливаем поток
+    localStream.value.getTracks().forEach((track) => track.stop());
+    localStream.value = null;
+    document.getElementById('audio').srcObject = null;
+  }
+};
