@@ -31,6 +31,23 @@ import chevron_svg from '../svg/chevron_svg.vue'
             </div>
 
 
+            <div class="large_select_info">
+
+            </div>
+
+            <div class="buttons">
+                <div class="cancel">
+                    <span>Закрыть</span>
+                    
+                </div>
+
+                <div class="apply">
+                    <span>Применить</span>
+
+                </div>
+            </div>
+
+
         </div>
     </div>
 </template>
@@ -71,6 +88,7 @@ span{
         display: flex;
         flex-direction: column;
         gap: 10px;
+        padding-top:10px ;
 
         .language, .theme, .server{
             width: 92%;
@@ -87,6 +105,44 @@ span{
             
             
         }
+        .large_select_info{
+            background: #7833AC;
+            padding-left:10px ;
+            border-radius: 10px;
+            width: 92%;
+            height: 43vh;
+            margin-left: 10px;
+
+        }
+
+        .buttons{
+            // background: red;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            
+            padding-left:10px ;
+            border-radius: 10px;
+            width: 92%;
+            height: 9vh;
+            margin-left: 10px;
+
+
+                .cancel, .apply{
+                    width: 47%;
+                    border-radius: 20px;
+                    background: #B163EC;
+                    height: 7vh;
+
+                }
+
+
+            
+
+
+        }
+
+        
     }
 }
 

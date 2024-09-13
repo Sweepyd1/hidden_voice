@@ -40,6 +40,7 @@ async def offer(request:Request):
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
 
     pc = RTCPeerConnection()
+    
     # pc_id = "PeerConnection(%s)"% uuid.uuid4()
     pcs.add(pc)
 
@@ -65,13 +66,14 @@ async def offer(request:Request):
     @pc.on("track")
     def on_track(track):
         if track.kind == "audio":
+            
             pc.addTrack(AudioTransformTrack(relay.subscribe(track)))
 
-            pass
+            
 
 
         for participant in pcs:
-            if participant != pc:  # Не отправляем трек самому себе
+            if participant != pc:  
                 participant.addTrack(track)
 
         @track.on("ended")

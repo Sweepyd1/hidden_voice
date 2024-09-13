@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref} from 'vue';
 
 
 
@@ -19,7 +19,7 @@ import next_svg from '../svg/bottom/next_svg.vue'
 import camera_off_svg from '../svg/bottom/camera_off_svg.vue'
 import mic_off_svg from '../svg/bottom/mic_off_svg.vue'
 
-// import settingsWindow from '../components/settingsWindow.vue'
+import settingsWindow from '../components/settingsWindow.vue'
 
 
 const a = true;
@@ -27,346 +27,350 @@ const isMic = ref(false);
 const isCamera = ref(false);
 
 
-const localStream = ref(null); // Для хранения локального потока
-// const pc = ref(null); // Для хранения RTCPeerConnection
+// const localStream = ref(null); // Для хранения локального потока
+// // const remoteStream = ref(null)
+// // const pc = ref(null); // Для хранения RTCPeerConnection
 
-const clickMic = async () => {
-  isMic.value = !isMic.value;
+// const clickMic = async () => {
+//   isMic.value = !isMic.value;
 
-  if (isMic.value) {
-    try {
-      localStream.value = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+//   if (isMic.value) {
+//     try {
+//       localStream.value = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
 
-      document.getElementById('audio').srcObject = localStream.value;
+//       document.getElementById('audio').srcObject = localStream.value;
 
-      } 
-    catch (error) {
-      console.error('Ошибка получения доступа к микрофону:', error);
-    }
-  } 
-    }
+//       } 
+//     catch (error) {
+//       console.error('Ошибка получения доступа к микрофону:', error);
+//     }
+//   } 
+//   else{
+//     localStream.value = await navigator.mediaDevices.getUserMedia({audio:false, video:false})
+//   }
+//     }
 
    
     
   
-function clickCamera(){
+// function clickCamera(){
 
-    isCamera.value = !isCamera.value
-}
+//     isCamera.value = !isCamera.value
+// }
 
-import axios from 'axios'
-const pc = ref(null);
-const dc = ref(null);
-const dcInterval = ref(null);
-const dataChannelLog = ref('');
-const timeStart = ref(null);
-const useDataChannel = ref(false);
-const useAudio = ref(false);
-const useVideo = ref(false);
-const screenSharing = ref(false);
-const iceGatheringLog = ref('')
-const iceConnectionLog = ref('')
-const signalingLog = ref('')
-
-
-
-const currentStamp = () => {
-  if (timeStart.value === null) {
-    timeStart.value = new Date().getTime();
-    return 0;
-  } else {
-    return new Date().getTime() - timeStart.value;
-  }
-};
+// import axios from 'axios'
+// const pc = ref(null);
+// const dc = ref(null);
+// const dcInterval = ref(null);
+// const dataChannelLog = ref('');
+// const timeStart = ref(null);
+// const useDataChannel = ref(false);
+// const useAudio = ref(false);
+// const useVideo = ref(false);
+// const screenSharing = ref(false);
+// const iceGatheringLog = ref('')
+// const iceConnectionLog = ref('')
+// const signalingLog = ref('')
 
 
-const createPeerConnection = () => {
-  const config = {
-    sdpSemantics: 'unified-plan',
-    iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
-  }
-  const pc = new RTCPeerConnection(config)
 
-  // Обработчики событий
-  pc.addEventListener('icegatheringstatechange', () => {
-    iceGatheringLog.value += ' -> ' + pc.iceGatheringState
-  })
-  iceGatheringLog.value = pc.iceGatheringState
-
-  pc.addEventListener('iceconnectionstatechange', () => {
-    iceConnectionLog.value += ' -> ' + pc.iceConnectionState
-  })
-  iceConnectionLog.value = pc.iceConnectionState
-
-  pc.addEventListener('signalingstatechange', () => {
-    signalingLog.value += ' -> ' + pc.signalingState
-  })
-  signalingLog.value = pc.signalingState
-
-  // Обработка треков (видео/аудио)
-  pc.addEventListener('track', (evt) => {
-    if (evt.track.kind === 'audio') {
-        document.getElementById('audio').srcObject = evt.streams[0]
-    } 
-    else{
-        document.getElementById('audio').srcObject = evt.streams[0]
-    }
-  })
-
-  return pc
-}
+// const currentStamp = () => {
+//   if (timeStart.value === null) {
+//     timeStart.value = new Date().getTime();
+//     return 0;
+//   } else {
+//     return new Date().getTime() - timeStart.value;
+//   }
+// };
 
 
-const negotiate = async () => {
-    console.log("negotiate")
-  try {
+// const createPeerConnection = () => {
+//   const config = {
+//     sdpSemantics: 'unified-plan',
+//     iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }],
+//   }
+//   const pc = new RTCPeerConnection(config)
+
+//   // Обработчики событий
+//   pc.addEventListener('icegatheringstatechange', () => {
+//     iceGatheringLog.value += ' -> ' + pc.iceGatheringState
+//   })
+//   iceGatheringLog.value = pc.iceGatheringState
+
+//   pc.addEventListener('iceconnectionstatechange', () => {
+//     iceConnectionLog.value += ' -> ' + pc.iceConnectionState
+//   })
+//   iceConnectionLog.value = pc.iceConnectionState
+
+//   pc.addEventListener('signalingstatechange', () => {
+//     signalingLog.value += ' -> ' + pc.signalingState
+//   })
+//   signalingLog.value = pc.signalingState
+
+//   // Обработка треков (видео/аудио)
+//   pc.addEventListener('track', (evt) => {
+//     if (evt.track.kind === 'audio') {
+//         document.getElementById('audio').srcObject = evt.streams[0]
+//     } 
+//     else{
+//         document.getElementById('audio').srcObject = evt.streams[0]
+//     }
+//   })
+
+//   return pc
+// }
+
+
+// const negotiate = async () => {
+//     console.log("negotiate")
+//   try {
     
-    pc.value = createPeerConnection();
+//     pc.value = createPeerConnection();
 
-    const offer = await pc.value.createOffer();
-    await pc.value.setLocalDescription(offer);
+//     const offer = await pc.value.createOffer();
+//     await pc.value.setLocalDescription(offer);
 
     
     
-    // await new Promise((resolve) => {
-    //   if (pc.value.iceGatheringState === 'complete') {
-    //     resolve();
-    //   } else {
-    //     const checkState = () => {
-    //       if (pc.value.iceGatheringState === 'complete') {
-    //         pc.value.removeEventListener('icegatheringstatechange', checkState);
-    //         resolve();
-    //       }
-    //     };
-    //     pc.value.addEventListener('icegatheringstatechange', checkState);
-    //     // alert();
-    //   }
-    // });
+//     // await new Promise((resolve) => {
+//     //   if (pc.value.iceGatheringState === 'complete') {
+//     //     resolve();
+//     //   } else {
+//     //     const checkState = () => {
+//     //       if (pc.value.iceGatheringState === 'complete') {
+//     //         pc.value.removeEventListener('icegatheringstatechange', checkState);
+//     //         resolve();
+//     //       }
+//     //     };
+//     //     pc.value.addEventListener('icegatheringstatechange', checkState);
+//     //     // alert();
+//     //   }
+//     // });
    
-    // Фильтруем кодеки
-    let offerSdp = offer.sdp;
-    const audioCodec = "";
-    if (audioCodec !== 'default') {
-      offerSdp = sdpFilterCodec('audio', audioCodec, offerSdp);
-    }
-    const videoCodec = "H264/90000";
-    if (videoCodec !== 'default') {
-      offerSdp = sdpFilterCodec('video', videoCodec, offerSdp);
-    }
+//     // Фильтруем кодеки
+//     let offerSdp = offer.sdp;
+//     const audioCodec = "";
+//     if (audioCodec !== 'default') {
+//       offerSdp = sdpFilterCodec('audio', audioCodec, offerSdp);
+//     }
+//     const videoCodec = "H264/90000";
+//     if (videoCodec !== 'default') {
+//       offerSdp = sdpFilterCodec('video', videoCodec, offerSdp);
+//     }
 
-    // Отображаем Offer SDP
-    // document.getElementById('offer-sdp').textContent = offerSdp;
+//     // Отображаем Offer SDP
+//     // document.getElementById('offer-sdp').textContent = offerSdp;
     
-    // Отправляем Offer на сервер
-    const response = await axios.post('http://localhost:8000/api/offer', {
-  sdp: offerSdp,
-  type: offer.type,
-  video_transform: "none",
-});
+//     // Отправляем Offer на сервер
+//     const response = await axios.post('http://localhost:8000/api/offer', {
+//   sdp: offerSdp,
+//   type: offer.type,
+//   video_transform: "none",
+// });
 
-    console.log(response.status)
-    // Получаем Answer от сервера
-    const answer = await response.data;
+//     console.log(response.status)
+//     // Получаем Answer от сервера
+//     const answer = await response.data;
     
-    // Отображаем Answer SDP
-    // document.getElementById('answer-sdp').textContent = answer.sdp;
+//     // Отображаем Answer SDP
+//     // document.getElementById('answer-sdp').textContent = answer.sdp;
 
-    // Устанавливаем Answer на RTCPeerConnection
-    await pc.value.setRemoteDescription(answer);
-  } catch (e) {
-    alert(e);
-  }
-};
-
-
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-const sdpFilterCodec = (kind, codec, realSdp) => {
-  const allowed = ref([]);
-  const rtxRegex = new RegExp(`a=fmtp:(\\d+) apt=(\\d+)\r$`);
-  const codecRegex = new RegExp('a=rtpmap:([0-9]+) ' + escapeRegExp(codec));
-  const videoRegex = new RegExp('(m=' + kind + ' .*?)( ([0-9]+))*\\s*$');
-
-  const lines = realSdp.split('\n');
-  let isKind = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith('m=' + kind + ' ')) {
-      isKind = true;
-    } else if (lines[i].startsWith('m=')) {
-      isKind = false;
-    }
-
-    if (isKind) {
-      let match = lines[i].match(codecRegex);
-      if (match) {
-        allowed.value.push(parseInt(match[1]));
-      }
-
-      match = lines[i].match(rtxRegex);
-      if (match && allowed.value.includes(parseInt(match[2]))) {
-        allowed.value.push(parseInt(match[1]));
-      }
-    }
-  }
-
-  const skipRegex = 'a=(fmtp|rtcp-fb|rtpmap):([0-9]+)';
-  let sdp = '';
-
-  isKind = false;
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith('m=' + kind + ' ')) {
-      isKind = true;
-    } else if (lines[i].startsWith('m=')) {
-      isKind = false;
-    }
-
-    if (isKind) {
-      const skipMatch = lines[i].match(skipRegex);
-      if (skipMatch && !allowed.value.includes(parseInt(skipMatch[2]))) {
-        continue;
-      } else if (lines[i].match(videoRegex)) {
-        sdp += lines[i].replace(videoRegex, '$1 ' + allowed.value.join(' ')) + '\n';
-      } else {
-        sdp += lines[i] + '\n';
-      }
-    } else {
-      sdp += lines[i] + '\n';
-    }
-  }
-
-  return sdp;
-};
+//     // Устанавливаем Answer на RTCPeerConnection
+//     await pc.value.setRemoteDescription(answer);
+//   } catch (e) {
+//     alert(e);
+//   }
+// };
 
 
+// function escapeRegExp(string) {
+//   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// }
 
-const start = async () => {
-//   document.getElementById('start').style.display = 'none';
-console.log("start")
-  pc.value = createPeerConnection();
+// const sdpFilterCodec = (kind, codec, realSdp) => {
+//   const allowed = ref([]);
+//   const rtxRegex = new RegExp(`a=fmtp:(\\d+) apt=(\\d+)\r$`);
+//   const codecRegex = new RegExp('a=rtpmap:([0-9]+) ' + escapeRegExp(codec));
+//   const videoRegex = new RegExp('(m=' + kind + ' .*?)( ([0-9]+))*\\s*$');
 
-  if (useDataChannel.value) {
-    const parameters = {"ordered":true};
-    dc.value = pc.value.createDataChannel('chat', parameters);
+//   const lines = realSdp.split('\n');
+//   let isKind = false;
 
-    dc.value.onclose = () => {
-      clearInterval(dcInterval.value);
-      dataChannelLog.value += '- close\n';
-    };
+//   for (let i = 0; i < lines.length; i++) {
+//     if (lines[i].startsWith('m=' + kind + ' ')) {
+//       isKind = true;
+//     } else if (lines[i].startsWith('m=')) {
+//       isKind = false;
+//     }
 
-    dc.value.onopen = () => {
-      dataChannelLog.value += '- open\n';
-      dcInterval.value = setInterval(() => {
-        const message = 'ping ' + currentStamp();
-        dataChannelLog.value += '> ' + message + '\n';
-        dc.value.send(message);
-      }, 1000);
-    };
+//     if (isKind) {
+//       let match = lines[i].match(codecRegex);
+//       if (match) {
+//         allowed.value.push(parseInt(match[1]));
+//       }
 
-    dc.value.onmessage = (evt) => {
-      dataChannelLog.value += '< ' + evt.data + '\n';
-      if (evt.data.substring(0, 4) === 'pong') {
-        const elapsedMs = currentStamp() - parseInt(evt.data.substring(5), 10);
-        dataChannelLog.value += ' RTT ' + elapsedMs + ' ms\n';
-      }
-    };
-  }
+//       match = lines[i].match(rtxRegex);
+//       if (match && allowed.value.includes(parseInt(match[2]))) {
+//         allowed.value.push(parseInt(match[1]));
+//       }
+//     }
+//   }
 
-  const constraints = {
-    audio: useAudio.value ? {
-      echoCancellation: true,
-      echoCancellationType: 'system',
-      noiseSuppression: true,
-    } : false,
-    video: false,
-  };
+//   const skipRegex = 'a=(fmtp|rtcp-fb|rtpmap):([0-9]+)';
+//   let sdp = '';
 
-  if (useVideo.value) {
-    const resolution = "320x240";
-    if (resolution) {
-      const [width, height] = resolution.split('x').map(Number);
-      constraints.video = {
-        width: { ideal: width },
-        height: { ideal: height },
-        frameRate: { ideal: 5 },
-      };
-    } else {
-      constraints.video = {};
-    }
-  }
+//   isKind = false;
+//   for (let i = 0; i < lines.length; i++) {
+//     if (lines[i].startsWith('m=' + kind + ' ')) {
+//       isKind = true;
+//     } else if (lines[i].startsWith('m=')) {
+//       isKind = false;
+//     }
 
-  if (constraints.audio || constraints.video) {
-    if (constraints.video) {
-    //   document.getElementById('media').style.display = 'block';
-    }
-    if (screenSharing.value) {
-      try {
-        const stream = await navigator.mediaDevices.getDisplayMedia({ video: false, audio: true });
-        stream.getTracks().forEach((track) => {
-          pc.value.addTrack(track, stream);
-        });
-        if (!constraints.audio) {
-          await negotiate();
-        }
-      } catch (err) {
-        alert('Could not acquire media: ' + err);
-      }
-      if (constraints.audio) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: {
-            echoCancellation: true,
-            echoCancellationType: 'system',
-            noiseSuppression: true,
-          }});
-          stream.getTracks().forEach((track) => {
-            pc.value.addTrack(track, stream);
-          });
-          await negotiate();
-        } catch (err) {
-          alert('Could not acquire media: ' + err);
-        }
-      }
-    } else {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        stream.getTracks().forEach((track) => {
-          pc.value.addTrack(track, stream);
-        });
-        await negotiate();
-      } catch (err) {
-        alert('Could not acquire media: ' + err);
-      }
-    }
-  } else {
-    await negotiate();
-  }
+//     if (isKind) {
+//       const skipMatch = lines[i].match(skipRegex);
+//       if (skipMatch && !allowed.value.includes(parseInt(skipMatch[2]))) {
+//         continue;
+//       } else if (lines[i].match(videoRegex)) {
+//         sdp += lines[i].replace(videoRegex, '$1 ' + allowed.value.join(' ')) + '\n';
+//       } else {
+//         sdp += lines[i] + '\n';
+//       }
+//     } else {
+//       sdp += lines[i] + '\n';
+//     }
+//   }
 
-//   document.getElementById('stop').style.display = 'inline-block';
-};
-
-const stop = () => {
-  if (dc.value) {
-    dc.value.close();
-  }
-  if (pc.value) {
-    pc.value.close();
-  }
-//   document.getElementById('start').style.display = 'inline-block';
-//   document.getElementById('stop').style.display = 'none';
-  dataChannelLog.value = '';
-  timeStart.value = null;
-};
+//   return sdp;
+// };
 
 
-onMounted(async () => {
-  await start()
-});
 
-onUnmounted(() => {
-  stop();
-});
+// const start = async () => {
+// //   document.getElementById('start').style.display = 'none';
+// console.log("start")
+//   pc.value = createPeerConnection();
+
+//   if (useDataChannel.value) {
+//     const parameters = {"ordered":true};
+//     dc.value = pc.value.createDataChannel('chat', parameters);
+
+//     dc.value.onclose = () => {
+//       clearInterval(dcInterval.value);
+//       dataChannelLog.value += '- close\n';
+//     };
+
+//     dc.value.onopen = () => {
+//       dataChannelLog.value += '- open\n';
+//       dcInterval.value = setInterval(() => {
+//         const message = 'ping ' + currentStamp();
+//         dataChannelLog.value += '> ' + message + '\n';
+//         dc.value.send(message);
+//       }, 1000);
+//     };
+
+//     dc.value.onmessage = (evt) => {
+//       dataChannelLog.value += '< ' + evt.data + '\n';
+//       if (evt.data.substring(0, 4) === 'pong') {
+//         const elapsedMs = currentStamp() - parseInt(evt.data.substring(5), 10);
+//         dataChannelLog.value += ' RTT ' + elapsedMs + ' ms\n';
+//       }
+//     };
+//   }
+
+//   const constraints = {
+//     audio: useAudio.value ? {
+//       echoCancellation: true,
+//       echoCancellationType: 'system',
+//       noiseSuppression: true,
+//     } : false,
+//     video: false,
+//   };
+
+//   if (useVideo.value) {
+//     const resolution = "320x240";
+//     if (resolution) {
+//       const [width, height] = resolution.split('x').map(Number);
+//       constraints.video = {
+//         width: { ideal: width },
+//         height: { ideal: height },
+//         frameRate: { ideal: 5 },
+//       };
+//     } else {
+//       constraints.video = {};
+//     }
+//   }
+
+//   if (constraints.audio || constraints.video) {
+//     if (constraints.video) {
+//     //   document.getElementById('media').style.display = 'block';
+//     }
+//     if (screenSharing.value) {
+//       try {
+//         const stream = await navigator.mediaDevices.getDisplayMedia({ video: false, audio: true });
+//         stream.getTracks().forEach((track) => {
+//           pc.value.addTrack(track, stream);
+//         });
+//         if (!constraints.audio) {
+//           await negotiate();
+//         }
+//       } catch (err) {
+//         alert('Could not acquire media: ' + err);
+//       }
+//       if (constraints.audio) {
+//         try {
+//           const stream = await navigator.mediaDevices.getUserMedia({ audio: {
+//             echoCancellation: true,
+//             echoCancellationType: 'system',
+//             noiseSuppression: true,
+//           }});
+//           stream.getTracks().forEach((track) => {
+//             pc.value.addTrack(track, stream);
+//           });
+//           await negotiate();
+//         } catch (err) {
+//           alert('Could not acquire media: ' + err);
+//         }
+//       }
+//     } else {
+//       try {
+//         const stream = await navigator.mediaDevices.getUserMedia(constraints);
+//         stream.getTracks().forEach((track) => {
+//           pc.value.addTrack(track, stream);
+//         });
+//         await negotiate();
+//       } catch (err) {
+//         alert('Could not acquire media: ' + err);
+//       }
+//     }
+//   } else {
+//     await negotiate();
+//   }
+
+// //   document.getElementById('stop').style.display = 'inline-block';
+// };
+
+// const stop = () => {
+//   if (dc.value) {
+//     dc.value.close();
+//   }
+//   if (pc.value) {
+//     pc.value.close();
+//   }
+// //   document.getElementById('start').style.display = 'inline-block';
+// //   document.getElementById('stop').style.display = 'none';
+//   dataChannelLog.value = '';
+//   timeStart.value = null;
+// };
+
+
+// onMounted(async () => {
+//   await start()
+// });
+
+// onUnmounted(() => {
+//   stop();
+// });
 
 
 </script>
@@ -377,7 +381,7 @@ onUnmounted(() => {
     
     <div class="container">
 
-        <settingsWindow v-if="!a"></settingsWindow>
+        <settingsWindow v-if="a"></settingsWindow>
 
       
         <audio id="audio" autoplay="true"></audio> 
